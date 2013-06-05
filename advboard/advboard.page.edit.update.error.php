@@ -16,7 +16,7 @@ require_once cot_incfile('advboard', 'plug');
 require_once cot_langfile('advboard');
 
 if (ab_inBoardCat($rpage['page_cat'])){
-    var_dump($rpage['page_expire']);
+
     // Пересчитать период публикации объявления
     if($rpage['page_expire'] == 0){
         $period_exp = cot_import('rperiod_exp','P','INT');
