@@ -387,7 +387,7 @@ function ab_advList($tpl = 'advboard.advlist', $items = 0, $order = '', $conditi
 
     while ($row = $res->fetch())
     {
-        $t->assign(cot_generate_pagetags($row, "LIST_ROW_"));
+        $t->assign(cot_generate_pagetags($row, "PAGE_ROW_"));
 
         $t->assign(array(
             'LIST_ROW_NUM'     => $jj,

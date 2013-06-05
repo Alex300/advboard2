@@ -48,7 +48,7 @@ class MainController{
         }else{
             $out['subtitle'] = $L['anadvboard']['my_advs'];
             $crumbs[] = array(cot_url('users', array('m'=>'details')), $L['pro_title']);
-            $crumbs[] = $L['anadvboard']['my_advs'];
+            $crumbs[] = $L['advboard']['my_advs'];
         }
         $breadcrumbs = cot_breadcrumbs($crumbs, $cfg['homebreadcrumb'], true);
 
@@ -74,7 +74,7 @@ class MainController{
 
         $t->assign(array(
             'PAGE_TITLE' => ($uid != $usr['id']) ? "{$L['advboard']['user_advs']}: {$urr['user_name']}" :
-                    $L['anadvboard']['my_advs'],
+                    $L['advboard']['my_advs'],
             'BREADCRUMBS' => $breadcrumbs,
             'USER_ADV_COUNT' => ab_userAdvCount($urr['user_id'], $advUnValidated),
             'USER_ADVS' => ab_advList('advboard.user_advlist', $cfg['page']['cat___default']['maxrowsperpage'],
