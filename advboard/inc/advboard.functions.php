@@ -350,7 +350,8 @@ function ab_advList($tpl = 'advboard.advlist', $items = 0, $order = '', $conditi
     }
 
     // Get pagination number if necessary
-    if (!empty($pagination))
+    $items = (int)$items;
+    if ($items > 0 && !empty($pagination))
     {
         list($pg, $d, $durl) = cot_import_pagenav($pagination, $items);
     }
@@ -426,32 +427,33 @@ function ab_advList($tpl = 'advboard.advlist', $items = 0, $order = '', $conditi
             $url_params = array();
         }
     }
-    $url_params[$pagination] = $durl;
-    if ($ajaxPagination){
-        $targetDivId = 'reload_'.$pagination;
-        is_string($ajaxPagParams) ? parse_str($ajaxPagParams, $ajax_args) : $ajax_args = $ajaxPagParams;
-        $ajax_args['e'] = 'advboard';
-        $pagenav = cot_pagenav($url_area, $url_params, $d, $totalitems, $items, $pagination,  '', true, $targetDivId,
-            'plug', $ajax_args);
-    }else{
-        $pagenav = cot_pagenav($url_area, $url_params, $d, $totalitems, $items, $pagination);
+    if($items > 0 && !empty($pagination)){
+        $url_params[$pagination] = $durl;
+        if ($ajaxPagination){
+            $targetDivId = 'reload_'.$pagination;
+            is_string($ajaxPagParams) ? parse_str($ajaxPagParams, $ajax_args) : $ajax_args = $ajaxPagParams;
+            $ajax_args['e'] = 'advboard';
+            $pagenav = cot_pagenav($url_area, $url_params, $d, $totalitems, $items, $pagination,  '', true, $targetDivId,
+                'plug', $ajax_args);
+        }else{
+            $pagenav = cot_pagenav($url_area, $url_params, $d, $totalitems, $items, $pagination);
+        }
+
+        $t->assign(array(
+            'PAGE_TOP_PAGINATION'  => $pagenav['main'],
+            'PAGE_TOP_PAGEPREV'    => $pagenav['prev'],
+            'PAGE_TOP_PAGENEXT'    => $pagenav['next'],
+            'PAGE_TOP_FIRST'       => $pagenav['first'],
+            'PAGE_TOP_LAST'        => $pagenav['last'],
+            'PAGE_TOP_CURRENTPAGE' => $pagenav['current'],
+            'PAGE_TOP_TOTALLINES'  => $totalitems,
+            'PAGE_TOP_MAXPERPAGE'  => $items,
+            'PAGE_TOP_TOTALPAGES'  => $pagenav['total'],
+            'PAGE_AJAX' => COT_AJAX,
+            'PAGE_TOP_USE_AJAX' => $ajaxPagination,
+            'PAGE_TOP_AJAX_DIV_ID' => ($ajaxPagination && ! COT_AJAX) ? $targetDivId : ''
+        ));
     }
-
-    $t->assign(array(
-        'PAGE_TOP_PAGINATION'  => $pagenav['main'],
-        'PAGE_TOP_PAGEPREV'    => $pagenav['prev'],
-        'PAGE_TOP_PAGENEXT'    => $pagenav['next'],
-        'PAGE_TOP_FIRST'       => $pagenav['first'],
-        'PAGE_TOP_LAST'        => $pagenav['last'],
-        'PAGE_TOP_CURRENTPAGE' => $pagenav['current'],
-        'PAGE_TOP_TOTALLINES'  => $totalitems,
-        'PAGE_TOP_MAXPERPAGE'  => $items,
-        'PAGE_TOP_TOTALPAGES'  => $pagenav['total'],
-        'PAGE_AJAX' => COT_AJAX,
-        'PAGE_TOP_USE_AJAX' => $ajaxPagination,
-        'PAGE_TOP_AJAX_DIV_ID' => ($ajaxPagination && ! COT_AJAX) ? $targetDivId : ''
-    ));
-
     /* === Hook === */
     foreach (cot_getextplugins('pagelist.tags') as $pl)
     {
