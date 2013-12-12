@@ -20,7 +20,6 @@ if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
 function ab_getCurrCategory(){
 	global $env, $pag, $c, $a, $row_page;
 
-
     static $currCat;
 
     if(!empty($currCat)) return $currCat;
@@ -39,42 +38,9 @@ function ab_getCurrCategory(){
 //    var_dump($ret);
 //    var_dump($row_page);
 //    var_dump($env['location']);
-//    die;
+
     // Ето строго для отладки !!!
-    if (!$ret) throw new Exception('Не могу определить категорию');
-
-//    var_dump($ret);
-//    die;
-
-//	if ($location == 'Pages'){
-//		$m = sed_import('m','G','ALP',24);
-//		$a = sed_import('a','G','ALP',24);
-//
-//        if (empty($al) || $al == ''){
-//            $al = sed_import('al','G','TXT');
-//        }
-//
-//		if ($m == 'add' && empty($a)){
-//			$ret = sed_import('c','G','ALP');
-//		}elseif($m == 'add' && $a == 'add'){
-//			$ret = sed_import('newpagecat','P','TXT');
-//		}elseif($m == 'edit' && $a == 'update'){
-//			$ret = sed_import('rpagecat','P','TXT');
-//		}elseif(empty($pag['page_cat'])){
-//            if (!empty($al)){
-//				$sql = sed_sql_query("SELECT page_cat FROM $db_pages WHERE page_alias='".$al."' LIMIT 1");
-//			}else{
-//				$sql = sed_sql_query("SELECT page_cat FROM $db_pages WHERE page_id='$id'");
-//			}
-//			// Не определена категория для страницы. Такого не бывает
-//            sed_die(sed_sql_numrows($sql)==0);
-//			$tmp = sed_sql_fetchassoc($sql);
-//			$ret = $tmp["page_cat"];
-//		}else{
-//			$ret = $pag['page_cat'];
-//		}
-//	}
-
+//    if (!$ret) throw new Exception('Не могу определить категорию');
     $currCat = $ret;
 
 	return $ret;
@@ -485,7 +451,7 @@ function ab_getCacheDrv(){
  * Рассылка уведомлений об истечении сроков публикации объявления
  */
 function ab_sendExpNotify(){
-	global $cfg, $sys, $usr, $adv_cats, $db, $db_pages, $db_users, $L;
+	global $cfg, $sys, $cot_extrafields, $db, $db_pages, $db_users, $L;
 	if (file_exists($cfg["plugins_dir"].DS.'advboard'.DS.'inc'.DS.'send.txt')){
 		$an_adv_send = implode('', file($cfg["plugins_dir"].DS.'advboard'.DS.'inc'.DS.'send.txt') );
 	}else{
@@ -516,8 +482,14 @@ function ab_sendExpNotify(){
 
         $fields = array('p.page_id', 'p.page_title', 'p.page_desc', 'p.page_ownerid', 'p.page_expire', 
                 'p.page_alias', 'p.page_cat', 'u.user_name', 'u.user_email');
-        if ($cfg['plugin']['advboard']['gEmailExtraField']){
-            $fields[] = 'page_'.$cfg['plugin']['advboard']['gEmailExtraField'];
+
+        $pageMailExtfld = false;
+        if(!empty($cfg['plugin']['advboard']['gEmailExtraField']) && !empty($cot_extrafields[$db_pages][$cfg['plugin']['advboard']['gEmailExtraField']]) ){
+            $pageMailExtfld = $cfg['plugin']['advboard']['gEmailExtraField'];
+        }
+
+        if ($pageMailExtfld){
+            $fields[] = 'p.page_'.$pageMailExtfld;
         }
         $where = array(
             'p.page_ownerid=user_id',
@@ -557,8 +529,8 @@ function ab_sendExpNotify(){
             $email_body = str_replace('{MY_ADVS}', $my_advs, $email_body);
             $email = $adv["user_email"];
 
-            if (empty($email) || $email == '') {
-                $email = $adv['page_'.$cfg['plugin']['advboard']['gEmailExtraField']];
+            if ( (empty($email) || $email == '') && $pageMailExtfld) {
+                $email = $adv['page_'.$pageMailExtfld];
             }
             if (!empty($email) && $email != ''){
                 cot_mail($email, $email_title, $email_body, '', false, null, true);
