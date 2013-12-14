@@ -243,7 +243,7 @@ function ab_advList($tpl = 'advboard.advlist', $items = 0, $order = '', $conditi
         $sub = true, $pagination = 'pld', $noself = false, $url_params = array(), $ajaxPagination = false,
         $ajaxPagParams = array() )
 {
-    global $db, $db_pages, $db_users, $env, $structure;
+    global $db, $db_pages, $db_users, $env, $structure, $cfg;
 
     // Compile lists
     if (!empty($blacklist))
@@ -354,7 +354,7 @@ function ab_advList($tpl = 'advboard.advlist', $items = 0, $order = '', $conditi
 
     while ($row = $res->fetch())
     {
-        $t->assign(cot_generate_pagetags($row, "PAGE_ROW_"));
+        $t->assign(cot_generate_pagetags($row, "PAGE_ROW_", $cfg['page']['cat___default']['truncatetext']));
 
         $t->assign(array(
             'LIST_ROW_NUM'     => $jj,
