@@ -15,7 +15,7 @@ defined('COT_CODE') or die('Wrong URL');
 require_once cot_incfile('advboard', 'plug');
 require_once cot_langfile('advboard');
 
-if ( $env['location'] != 'administration'){
+if (!defined('COT_ADMIN')){
     ab_sendExpNotify();
 
     // Последние объявления

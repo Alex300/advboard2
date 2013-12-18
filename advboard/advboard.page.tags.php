@@ -42,7 +42,8 @@ if (ab_inBoardCat($pag['page_cat'])){
             if ($cfg['plugin']['advboard']['expNotifyPeriod'] > 0){
                 if ($diff < (86400 * $cfg['plugin']['advboard']['expNotifyPeriod']) && $diff > 0){
                     if ($expDays >= 1) {
-                        cot_message(sprintf($L['advboard']['exp_soon'], $expDays), 'warning');
+                        cot_message(sprintf($L['advboard']['exp_soon'], cot_declension($expDays, $Ls['Days'], false, true)),
+                            'warning');
                     }else{
                         cot_message($L['advboard']['exp_today'], 'warning');
                     }

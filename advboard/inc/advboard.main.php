@@ -76,7 +76,7 @@ class MainController{
             'PAGE_TITLE' => ($uid != $usr['id']) ? "{$L['advboard']['user_advs']}: {$urr['user_name']}" :
                     $L['advboard']['my_advs'],
             'BREADCRUMBS' => $breadcrumbs,
-			'USER_ID' => $uid,
+            'USER_ID' => $uid,
             'USER_ADV_COUNT' => ab_userAdvCount($urr['user_id'], $advUnValidated),
             'USER_ADVS' => ab_advList('advboard.user_advlist', $cfg['page']['cat___default']['maxrowsperpage'],
                     'page_begin DESC', $advCond, '', '', '', true, 'd',

@@ -41,7 +41,7 @@ if(ab_inBoardCat(ab_getCurrCategory())){
 	if ($cfg['plugin']['advboard']['expNotifyPeriod'] > 0 && $pag['page_expire'] > 0){
 		if ($diff < (86400 * $cfg['plugin']['advboard']['expNotifyPeriod']) && $diff > 0){
             if ($expDays >= 1) {
-                $msg = sprintf($L['advboard']['exp_soon'], $expDays);
+                $msg = sprintf($L['advboard']['exp_soon'], cot_declension($expDays, $Ls['Days'], false, true));
             }else{
                 $msg = $L['advboard']['exp_today'];
             }
