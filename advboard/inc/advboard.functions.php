@@ -298,36 +298,31 @@ function ab_advList($tpl = 'advboard.advlist', $items = 0, $order = '', $conditi
             $cats = array_intersect($cats, $wl);
         }
 
-        $where_cat = "AND page_cat IN ('" . implode("','", $cats) . "')";
+        $where_cat = "page_cat IN ('" . implode("','", $cats) . "')";
     }
     elseif (!empty($cat))
     {
-        $where_cat = "AND page_cat = " . $db->quote($cat);
+        $where_cat = "page_cat = " . $db->quote($cat);
     }
 
-    if (is_array($condition)) $condition = implode(' AND ', $condition);
+    $where_condition = array(
+        // Только опубликованные объявления. Может быть перекрыто параметром $condition
+        'state' => "page_state=0"
+    );
 
-    $where_condition = (empty($condition)) ? '' : "AND $condition";
-
-    if ($noself && defined('COT_PAGES') && !defined('COT_LIST'))
-    {
+    if ($noself && defined('COT_PAGES') && !defined('COT_LIST')){
         global $id;
-        $where_condition .= " AND page_id != $id";
+        $tmp = int($id);
+        if($tmp > 0) $where_condition['nosef'] = "page_id != $tmp";
     }
 
     // Get pagination number if necessary
     $items = (int)$items;
-    if ($items > 0 && !empty($pagination))
-    {
+    if ($items > 0 && !empty($pagination)){
         list($pg, $d, $durl) = cot_import_pagenav($pagination, $items);
-    }
-    else
-    {
+    }else{
         $d = 0;
     }
-
-    // Display the items
-    $t = new XTemplate(cot_tplfile($tpl, 'plug'));
 
     /* === Hook === */
     foreach (array_merge(cot_getextplugins('customnews.query'), cot_getextplugins('pagelist.query')) as $pl)
@@ -336,22 +331,40 @@ function ab_advList($tpl = 'advboard.advlist', $items = 0, $order = '', $conditi
     }
     /* ===== */
 
+
+    if (is_array($condition)){
+        $where_condition = array_merge($where_condition, $condition);
+    }elseif(is_string($condition)){
+        $where_condition['condition'] = $condition;
+        if( mb_strpos($condition, 'page_state') !== false ){
+            unset($where_condition['state']);
+        }
+    }
+
+    if(!isset($where_condition['cat'])) $where_condition['cat'] = $where_cat;
+
+    $where_condition = array_filter($where_condition);
+
+    $where = '';
+    if(!empty($where_condition)) $where = "WHERE ".implode(' AND ', $where_condition);
+
     $totalitems = $db->query("SELECT COUNT(*)
-		FROM $db_pages AS p $cns_join_tables
-		WHERE page_state='0' $where_cat $where_condition")->fetchColumn();
+		FROM $db_pages AS p $cns_join_tables $where")->fetchColumn();
 
     $sql_order = empty($order) ? '' : "ORDER BY $order";
     $sql_limit = ($items > 0) ? "LIMIT $d, $items" : '';
 
     $res = $db->query("SELECT p.*, u.* $cns_join_columns
 		FROM $db_pages AS p
-			LEFT JOIN $db_users AS u ON p.page_ownerid = u.user_id
-			$cns_join_tables
-		WHERE page_state='0' $where_cat $where_condition
-		$sql_order $sql_limit");
+		LEFT JOIN $db_users AS u ON p.page_ownerid = u.user_id
+		$cns_join_tables
+		$where $sql_order $sql_limit");
+
+
+    // Display the items
+    $t = new XTemplate(cot_tplfile($tpl, 'plug'));
 
     $jj = 1;
-
     while ($row = $res->fetch())
     {
         $t->assign(cot_generate_pagetags($row, "PAGE_ROW_", $cfg['page']['cat___default']['truncatetext']));

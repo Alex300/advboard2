@@ -54,7 +54,7 @@ class MainController{
 
         $advUnValidated = ($urr['user_id'] == $usr['id'] || $usr["isadmin"] );
 
-        $advCond = array();
+        $advCond = array('state' => "");
 
         if (!$advUnValidated){
             $advCond['date'] = "page_begin <= {$sys['now']} AND (page_expire = 0 OR page_expire > {$sys['now']})";
