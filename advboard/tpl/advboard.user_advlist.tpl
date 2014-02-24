@@ -26,24 +26,25 @@
             </div>
             <!-- ENDIF -->
 
-            <a href="{PAGE_ROW_ADMIN_EDIT_URL}" class="btn btn-mini">
-                <span class="icon-edit"></span> {PHP.L.Edit}</a>
+            <a href="{PAGE_ROW_ADMIN_EDIT_URL}" class="btn btn-default btn-xs">
+                <span class="glyphicon glyphicon-edit"></span> {PHP.L.Edit}</a>
 
-            <a href="{PAGE_ROW_ADMIN_CLONE_URL}" class="btn btn-mini">
-                <i class="icon-share"></i> Клонировать</a>
+            <a href="{PAGE_ROW_ADMIN_CLONE_URL}" class="btn btn-default btn-xs">
+                <i class="glyphicon glyphicon-share"></i> Клонировать</a>
 
             <!-- IF {PHP.usr.isadmin} -->
-            <a href="{PAGE_ROW_ADMIN_UNVALIDATE_URL}" class="btn btn-mini confirmLink">
+            <a href="{PAGE_ROW_ADMIN_UNVALIDATE_URL}" class="btn btn-default btn-xs confirmLink">
                 <!-- IF {PAGE_ROW_STATE} == 1 -->
-                <span class="icon-check"></span> {PHP.L.Validate}
+                <span class="glyphicon glyphicon-check"></span> {PHP.L.Validate}
                 <!-- ELSE -->
-                <span class="icon-time"></span> {PHP.L.Putinvalidationqueue}
+                <span class="glyphicon glyphicon-time"></span> {PHP.L.Putinvalidationqueue}
                 <!-- ENDIF --></a>
-
-            <a href="{PAGE_ROW_ADMIN_DELETE_URL}" class="btn btn-mini confirmLink">
-                <span class="icon-trash"></span> {PHP.L.Delete}</a>
-
             <!-- <span class="italic desc">({PHP.L.Hits}: {PAGE_ROW_COUNT})</span>-->
+            <!-- ENDIF -->
+
+            <!-- IF {PAGE_ROW_ADMIN_DELETE_URL} -->
+            <a href="{PAGE_ROW_ADMIN_DELETE_URL}" class="btn btn-default btn-xs confirmLink">
+                <span class="glyphicon glyphicon-trash"></span> {PHP.L.Delete}</a>
             <!-- ENDIF -->
         </div>
         <!-- ENDIF -->
