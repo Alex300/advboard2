@@ -41,4 +41,12 @@ if (ab_inBoardCat($page_data['page_cat'])){
             if(isset($temp_array['ADMIN_EDIT'])) unset($temp_array['ADMIN_EDIT'], $temp_array['ADMIN_EDIT_URL']);
         }
     }
+
+    // Автор объявления может его удалить
+    if ($usr['id'] > 0 && $usr['id'] == $page_data['page_ownerid']){
+        $delete_confirm_url = cot_confirm_url($delete_url, 'page', 'page_confirm_delete');
+
+        $temp_array['ADMIN_DELETE'] = cot_rc_link($delete_confirm_url, $L['Delete'], 'class="confirmLink"');
+        $temp_array['ADMIN_DELETE_URL'] = $delete_confirm_url;
+    }
 }
