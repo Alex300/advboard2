@@ -370,9 +370,9 @@ function ab_advList($tpl = 'advboard.advlist', $items = 0, $order = '', $conditi
         $t->assign(cot_generate_pagetags($row, "PAGE_ROW_", $cfg['page']['cat___default']['truncatetext']));
 
         $t->assign(array(
-            'LIST_ROW_NUM'     => $jj,
-            'LIST_ROW_ODDEVEN' => cot_build_oddeven($jj),
-            'LIST_ROW_RAW'     => $row
+            'PAGE_ROW_NUM'     => $jj,
+            'PAGE_ROW_ODDEVEN' => cot_build_oddeven($jj),
+            'PAGE_ROW_RAW'     => $row
         ));
 
         $t->assign(cot_generate_usertags($row, 'LIST_ROW_OWNER_'));
